@@ -23,7 +23,7 @@ public class TileManager {
 		tile = new Tile[10];
 		mapTileNum = new int[gp.maxWorldCol][gp.maxWorldRow];
 		getTileImage();
-		loadMap("/maps/world01.txt");
+		loadMap("/maps/world02.txt");
 	}
 
 	public void getTileImage() {
@@ -47,9 +47,13 @@ public class TileManager {
 			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/tree.png"));
 			tile[4].collision = true;
 
-			
 			tile[5] = new Tile();
 			tile[5].image = ImageIO.read(getClass().getResourceAsStream("/tiles/sand.png"));
+			
+			tile[6] = new Tile();
+			tile[6].image = ImageIO.read(getClass().getResourceAsStream("/tiles/bridge.png"));
+			
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

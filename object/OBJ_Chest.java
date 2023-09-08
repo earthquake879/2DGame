@@ -13,5 +13,6 @@ public OBJ_Chest(){
 		}catch(IOException e){
 			e.printStackTrace();
 		}
+		collision = true;
 	}
 }

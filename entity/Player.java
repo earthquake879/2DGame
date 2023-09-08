@@ -1,6 +1,7 @@
 package entity;
 
 import main.KeyHandler;
+import object.Monster;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,20 +17,21 @@ public class Player extends Entity {
 
 	GamePanel gp;
 	KeyHandler keyH;
-	
+
 	public final int screenX;
 	public final int screenY;
 	public int hasKey = 0;
-	
-	
+	public boolean hasSword;
+
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
-		
-		screenX = gp.screenWidth/2 - (gp.tileSize/2);
-		screenY = gp.screenHeight/2 - (gp.tileSize/2);
-		
-		solidArea = new Rectangle(8, 16, 32, 32);
+		strength = 0;
+		hasSword = false;
+		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
+
+		solidArea = new Rectangle(6, 16, 32, 32);
 		solidAreaDefaultX = solidArea.x;
 		solidAreaDefaultY = solidArea.y;
 		setDefaultValues();
@@ -37,8 +39,8 @@ public class Player extends Entity {
 	}
 
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
+		worldX = gp.tileSize * 25;
+		worldY = gp.tileSize * 42;
 		speed = 4;
 		direction = "down";
 	}
@@ -71,16 +73,16 @@ public class Player extends Entity {
 			} else if (keyH.rightPressed == true) {
 				direction = "right";
 			}
-			
+
 			collisionOn = false;
 			gp.cChecker.checkTile(this);
-			
-			//CHECK OBJECT COLLISION
+
+			// CHECK OBJECT COLLISION
 			int objIndex = gp.cChecker.checkObject(this, true);
 			pickUpObject(objIndex);
-			
-			if(!collisionOn) {
-				switch(direction) {
+
+			if (!collisionOn) {
+				switch (direction) {
 				case "up":
 					worldY -= speed;
 					break;
@@ -95,7 +97,7 @@ public class Player extends Entity {
 					break;
 				}
 			}
-			
+
 			spriteCounter++;
 			if (spriteCounter > 10) {
 				if (spriteNum == 1) {
@@ -107,28 +109,27 @@ public class Player extends Entity {
 			}
 		}
 	}
-	
+
 	public void pickUpObject(int i) {
-		
-		if(i != 999) {
+
+		if (i != 999) {
 			String objectName = gp.obj[i].name;
-			
-			switch(objectName) {
+
+			switch (objectName) {
 			case "Key":
 				gp.playSE(1);
 				hasKey++;
-				gp.obj[i]=null;
+				gp.obj[i] = null;
 				gp.obj[i] = null;
 				gp.ui.showMessage("You got a key!");
 				break;
 			case "Door":
-				if(hasKey > 0) {
+				if (hasKey > 0) {
 					gp.playSE(3);
 					gp.obj[i] = null;
 					hasKey--;
 					gp.ui.showMessage("You opened a door!");
-				}
-				else {
+				} else {
 					gp.ui.showMessage("You need a key");
 				}
 				System.out.println("Key: " + hasKey);
@@ -140,14 +141,40 @@ public class Player extends Entity {
 				gp.ui.showMessage("Speed up!");
 				break;
 			case "Chest":
-				gp.ui.gameFinished = true;
-				gp.stopMusic();
-				gp.playSE(4);
+				if (hasKey > 0) {
+					hasKey--;
+					gp.ui.gameFinished = true;
+					gp.stopMusic();
+					gp.playSE(4);
+				} else {
+					gp.ui.showMessage("This chest requires a key!");
+				}
 				break;
+			case "Sword":
+				gp.playSE(2);
+				gp.obj[i] = null;
+				strength += 2;
+				hasSword = true;
+				gp.ui.showMessage("Weapon Acquired!");
+				break;
+			case "Monster":
+				gp.ui.showMessage("Boss Battle!");
+				if (pFight(strength)) {
+					gp.obj[i] = null;
+				} else {
+					gp.ui.showMessage("You are not strong enough	");
+				}
 			}
 		}
 	}
-	
+
+	public boolean pFight(int strength) {
+		if (strength > Monster.strength) {
+			return true;
+		}
+		return false;
+	}
+
 	public void draw(Graphics2D g2) {
 //		g2.setColor(Color.white);
 //		g2.fillRect(x, y, gp.tileSize, gp.tileSize);
