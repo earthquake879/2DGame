@@ -6,23 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
-import entity.Player;
 import object.OBJ_Boots;
 import object.OBJ_Key;
-import object.OBJ_Sword;
 
 public class UI {
 
 	GamePanel gp;
 	Font arial_40, arial_80B;
 	BufferedImage keyImage;
-	BufferedImage swordImage;
 	public boolean messageOn = false;
 	public String message = "";
 	int messageCounter = 0;
 	public boolean gameFinished = false;
-	KeyHandler kHandler = new KeyHandler();
-	Player player = new Player(gp, kHandler);
 	
 	double playTime;
 	DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -31,9 +26,7 @@ public class UI {
 		this.gp = gp;
 		arial_40 = new Font("Arial", Font.PLAIN, 40);
 		arial_80B = new Font("Arial", Font.BOLD, 80);
-		OBJ_Key key = new OBJ_Key();
-		OBJ_Sword sword = new OBJ_Sword();
-		swordImage = sword.image;
+		OBJ_Key key = new OBJ_Key(gp);
 		keyImage = key.image;
 	}
 
@@ -45,7 +38,7 @@ public class UI {
 	public void draw(Graphics2D g2) {
 
 		if (!gameFinished) {
-			
+
 			g2.setFont(arial_40);
 			g2.setColor(Color.white);
 			g2.drawImage(keyImage, gp.tileSize / 2, gp.tileSize / 2, gp.tileSize, gp.tileSize, null);
@@ -59,18 +52,12 @@ public class UI {
 
 				g2.setFont(g2.getFont().deriveFont(30));
 				g2.drawString(message, gp.tileSize / 2, gp.tileSize * 5);
-
+ 
 				messageCounter++;
 
 				if (messageCounter > 120) {
 					messageCounter = 0;
 					messageOn = false;
-				}
-				if(player.hasSword) {
-				g2.setFont(arial_40);
-				g2.setColor(Color.white);
-				g2.drawImage(swordImage, gp.tileSize / 2, gp.tileSize / 2, gp.tileSize, gp.tileSize, null);
-				g2.drawString("x 1", 74, 75);
 				}
 			}
 		} else {

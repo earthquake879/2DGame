@@ -1,7 +1,7 @@
 package entity;
 
 import main.KeyHandler;
-import object.Monster;
+import main.UtilityTooll;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -21,17 +21,15 @@ public class Player extends Entity {
 	public final int screenX;
 	public final int screenY;
 	public int hasKey = 0;
-	public boolean hasSword;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
-		strength = 0;
-		hasSword = false;
+
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
-		solidArea = new Rectangle(6, 16, 32, 32);
+		solidArea = new Rectangle(8, 16, 32, 32);
 		solidAreaDefaultX = solidArea.x;
 		solidAreaDefaultY = solidArea.y;
 		setDefaultValues();
@@ -39,27 +37,37 @@ public class Player extends Entity {
 	}
 
 	public void setDefaultValues() {
-		worldX = gp.tileSize * 25;
-		worldY = gp.tileSize * 42;
+		worldX = gp.tileSize * 23;
+		worldY = gp.tileSize * 21;
 		speed = 4;
 		direction = "down";
 	}
 
 	public void getPlayerImage() {
 
+		up1 = setup("boy_up_1");
+		up2 = setup("boy_up_2");
+		left1 = setup("boy_left_1");
+		left2 = setup("boy_left_2");
+		down1 = setup("boy_down_1");
+		down2 = setup("boy_down_2");
+		right1 = setup("boy_right_1");
+		right2 = setup("boy_right_2");
+
+	}
+
+	public BufferedImage setup(String imageName) {
+		UtilityTooll uTool = new UtilityTooll();
+		BufferedImage image = null;
+
 		try {
-			up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
-			up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
-			left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
-			left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
-			down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
-			down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
-			right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
-			right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
+			image = ImageIO.read(getClass().getResourceAsStream("/player/" + imageName + ".png"));
+			image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return image;
 	}
 
 	public void update() {
@@ -141,38 +149,12 @@ public class Player extends Entity {
 				gp.ui.showMessage("Speed up!");
 				break;
 			case "Chest":
-				if (hasKey > 0) {
-					hasKey--;
-					gp.ui.gameFinished = true;
-					gp.stopMusic();
-					gp.playSE(4);
-				} else {
-					gp.ui.showMessage("This chest requires a key!");
-				}
+				gp.ui.gameFinished = true;
+				gp.stopMusic();
+				gp.playSE(4);
 				break;
-			case "Sword":
-				gp.playSE(2);
-				gp.obj[i] = null;
-				strength += 2;
-				hasSword = true;
-				gp.ui.showMessage("Weapon Acquired!");
-				break;
-			case "Monster":
-				gp.ui.showMessage("Boss Battle!");
-				if (pFight(strength)) {
-					gp.obj[i] = null;
-				} else {
-					gp.ui.showMessage("You are not strong enough	");
-				}
 			}
 		}
-	}
-
-	public boolean pFight(int strength) {
-		if (strength > Monster.strength) {
-			return true;
-		}
-		return false;
 	}
 
 	public void draw(Graphics2D g2) {
@@ -215,7 +197,7 @@ public class Player extends Entity {
 			}
 			break;
 		}
-		g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+		g2.drawImage(image, screenX, screenY, null);
 
 	}
 }
