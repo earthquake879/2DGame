@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
-import main.UtilityTool;
+import main.Utility;
 
 public class TileManager {
 
@@ -38,7 +38,7 @@ public class TileManager {
 	}
 
 	public void setup(int index, String imageName, boolean collision) {
-		UtilityTool uTool = new UtilityTool();
+		Utility uTool = new Utility();
 
 		try {
 			tile[index] = new Tile();

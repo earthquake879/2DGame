@@ -1,7 +1,7 @@
 package entity;
 
 import main.KeyHandler;
-import main.UtilityTool;
+import main.Utility;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -57,7 +57,7 @@ public class Player extends Entity {
 	}
 
 	public BufferedImage setup(String imageName) {
-		UtilityTool uTool = new UtilityTool();
+		Utility uTool = new Utility();
 		BufferedImage image = null;
 
 		try {
