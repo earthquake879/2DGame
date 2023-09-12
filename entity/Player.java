@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
+import java.util.Random;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
@@ -17,15 +17,17 @@ public class Player extends Entity {
 
 	GamePanel gp;
 	KeyHandler keyH;
-
+	Random rand;
+	
 	public final int screenX;
 	public final int screenY;
 	public int hasKey = 0;
+	public int strength = 1;
 
 	public Player(GamePanel gp, KeyHandler keyH) {
 		this.gp = gp;
 		this.keyH = keyH;
-
+		rand = new Random();
 		screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
 		screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
@@ -38,7 +40,7 @@ public class Player extends Entity {
 
 	public void setDefaultValues() {
 		worldX = gp.tileSize * 23;
-		worldY = gp.tileSize * 21;
+		worldY = gp.tileSize * 40;
 		speed = 4;
 		direction = "down";
 	}
@@ -128,7 +130,6 @@ public class Player extends Entity {
 				gp.playSE(1);
 				hasKey++;
 				gp.obj[i] = null;
-				gp.obj[i] = null;
 				gp.ui.showMessage("You got a key!");
 				break;
 			case "Door":
@@ -152,6 +153,18 @@ public class Player extends Entity {
 				gp.ui.gameFinished = true;
 				gp.stopMusic();
 				gp.playSE(4);
+				break;
+			case "Sword":
+				gp.obj[i] = null;
+				gp.playSE(2);
+				gp.ui.showMessage("You got way stronger!");
+				strength += 10;
+				break;
+			case "Monster":
+				if(strength >= 10) {
+					gp.obj[i] = null;
+					gp.playSE(6);
+				}
 				break;
 			}
 		}
